@@ -15,6 +15,7 @@ import com.techelevator.campground.jdbc.JDBCReservationDAO;
 import com.techelevator.campground.jdbc.JDBCSiteDAO;
 import com.techelevator.campground.model.Campground;
 import com.techelevator.campground.model.Park;
+import com.techelevator.campground.model.Site;
 import com.techelevator.view.Menu;
 
 public class CampgroundCLI {
@@ -82,22 +83,28 @@ public class CampgroundCLI {
 		while (!choice.equals("Return to Previous Screen")) {
 			choice = (String) menu.getChoiceFromOptions(PARK_MENU);
 			if (choice.equals("View Campgrounds")) {
-					List<Campground> campgrounds = campgroundDAO.getAllCampground(park);
-					for (Campground campground: campgrounds) {
-						System.out.println(campground.toString() + "\n");
-					}
+				List<Campground> campgrounds = campgroundDAO.getAllCampground(park);
+				for (Campground campground : campgrounds) {
+					System.out.println(campground.toString() + "\n");
+				}
 			} else if (choice.equals("Search for Reservation")) {
 				// select a campground
+				menu.displayCampgroundOptions(campgroundDAO.getAllCampground(park));
+				Campground chosen = menu.getCampgroundChoice(campgroundDAO.getAllCampground(park));
+				System.out.println("You have chosen: " + chosen.getName());
+				// find reservation in that campground
+				// findReservation(campground);
 				
-				//find reservation in that campground
-//					findReservation(campground);
+				List<Site> availableSites = siteDAO.getAllAvailable(chosen);
+				
 			}
 		}
 	}
 
 	public void findReservation(Campground campground) {
-		
+
 	}
+
 	public Park mapRowToPark(String query) {
 		Park park = new Park();
 		SqlRowSet rowset = jdbc.queryForRowSet(query);

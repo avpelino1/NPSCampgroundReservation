@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface SiteDAO {
 
-	public List<Site> getAllAvailable();
+	public List<Site> getAllAvailable(Campground chosen);
 	
 	public List<Site> getTopFive();
 	

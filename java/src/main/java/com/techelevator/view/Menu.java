@@ -3,7 +3,10 @@ package com.techelevator.view;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.Scanner;
+
+import com.techelevator.campground.model.Campground;
 
 public class Menu {
 
@@ -33,7 +36,8 @@ public class Menu {
 				choice = options[selectedOption - 1];
 			}
 		} catch (NumberFormatException e) {
-			// eat the exception, an error message will be displayed below since choice will be null
+			// eat the exception, an error message will be displayed below since choice will
+			// be null
 		}
 		if (choice == null) {
 			out.println("\n*** " + userInput + " is not a valid option ***\n");
@@ -49,5 +53,36 @@ public class Menu {
 		}
 		out.print("\nPlease choose an option >>> ");
 		out.flush();
+	}
+
+	public void displayCampgroundOptions(List<Campground> options) {
+
+		out.println();
+		int counter = 1;
+		for (Campground campground : options) {
+			System.out.println(counter + ") " + campground.getName());
+			counter++;
+		}
+		out.print("\nPlease choose an option >>> ");
+		out.flush();
+
+	}
+	public Campground getCampgroundChoice(List<Campground> options) {
+		Campground choice = null;
+		Campground[] options1 = options.toArray(new Campground[options.size()]);
+		String userInput = in.nextLine();
+		try {
+			int selectedOption = Integer.valueOf(userInput);
+			if (selectedOption > 0 && selectedOption <= options1.length) {
+				choice = options1[selectedOption - 1];
+			}
+		} catch (NumberFormatException e) {
+			// eat the exception, an error message will be displayed below since choice will
+			// be null
+		}
+		if (choice == null) {
+			out.println("\n*** " + userInput + " is not a valid option ***\n");
+		}
+		return choice;
 	}
 }
