@@ -38,13 +38,22 @@ public class JDBCSiteDAO implements SiteDAO {
 		String departure = findDate();
 
 		Long campgroundId = chosen.getId();
+		
+		System.out.println(arrival + " " + departure);
 
 		// this selects the site_id of all available campsites in the campground that
 		// the user chose:
-		String sqlSelect = "SELECT site.site_id FROM reservation " + "JOIN site ON site.site_id = reservation.site_id"
-				+ "WHERE site.campground_id = " + campgroundId + "AND site.site_id NOT IN ("
-				+ "SELECT site_id FROM reservation " + "WHERE (from_date, to_date) OVERLAPS (DATE '?', DATE '?')"
-				+ ") GROUP BY site.site_id" + "ORDER BY site.site_id";
+		String sqlSelect = "SELECT site_id FROM reservation WHERE (from_date, to_date) OVERLAPS ('?', '?') "
+				+ "GROUP BY site_id ORDER BY site_id)";
+		
+//		String sqlSelect = "SELECT * FROM site WHERE campground_id = 1 AND site_id "
+//				+ "NOT IN (SELECT site_id FROM reservation WHERE (from_date, to_date) OVERLAPS (DATE '2020-09-04', DATE '2020-09-09') "
+//				+ "GROUP BY site_id ORDER BY site_id)";
+				
+//				"SELECT * FROM reservation " + "JOIN site ON site.site_id = reservation.site_id"
+//				+ "WHERE site.campground_id = " + campgroundId + "AND site.site_id NOT IN ("
+//				+ "SELECT site_id FROM reservation " + "WHERE (from_date, to_date) OVERLAPS (DATE '?', DATE '?')"
+//				+ ") GROUP BY site.site_id" + "ORDER BY site.site_id";
 
 		List<Site> siteList = new ArrayList<Site>();
 		SqlRowSet rowset = jdbc.queryForRowSet(sqlSelect, arrival, departure);

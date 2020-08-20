@@ -99,9 +99,13 @@ public class CampgroundCLI {
 					System.out.println("There are no available sites.");
 					choice = "Return to Previous Screen";
 					//we need to ask them to input different dates
-				}
+				} else {
 				System.out.println("Results Matching Your Criteria:");
+				System.out.println("list of sites");
 				
+				
+				
+				}
 				
 			}
 		}
