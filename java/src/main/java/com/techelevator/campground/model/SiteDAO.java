@@ -6,7 +6,7 @@ public interface SiteDAO {
 
 	public List<Site> getAllAvailable(Campground chosen);
 	
-	public List<Site> getTopFive();
+	public String getTopFiveAndConvertToString(List<Site> listOfAvailableSites);
 	
 	
 }

@@ -94,8 +94,14 @@ public class CampgroundCLI {
 				System.out.println("You have chosen: " + chosen.getName());
 				// find reservation in that campground
 				// findReservation(campground);
-				
 				List<Site> availableSites = siteDAO.getAllAvailable(chosen);
+				if (availableSites.size() == 0) {
+					System.out.println("There are no available sites.");
+					choice = "Return to Previous Screen";
+					//we need to ask them to input different dates
+				}
+				System.out.println("Results Matching Your Criteria:");
+				
 				
 			}
 		}
