@@ -3,14 +3,19 @@ package com.techelevator.campground.jdbc;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import com.techelevator.campground.model.Campground;
@@ -22,10 +27,16 @@ public class JDBCSiteDAO implements SiteDAO {
 
 	private DataSource datasource;
 	public JdbcTemplate jdbc;
-
+	// **************ANDY***********************
+	public NamedParameterJdbcTemplate jdbcSpecial;
+	// **************ANDY***********************
+	
 	public JDBCSiteDAO(DataSource dataSource) {
 		this.datasource = dataSource;
 		jdbc = new JdbcTemplate(datasource);
+		// **************ANDY***********************
+		jdbcSpecial = new NamedParameterJdbcTemplate(datasource);
+		// **************ANDY***********************
 	}
 
 	@Override
@@ -43,20 +54,37 @@ public class JDBCSiteDAO implements SiteDAO {
 
 		// this selects the site_id of all available campsites in the campground that
 		// the user chose:
-		String sqlSelect = "SELECT site_id FROM reservation WHERE (from_date, to_date) OVERLAPS ('?', '?') "
-				+ "GROUP BY site_id ORDER BY site_id)";
 		
-//		String sqlSelect = "SELECT * FROM site WHERE campground_id = 1 AND site_id "
-//				+ "NOT IN (SELECT site_id FROM reservation WHERE (from_date, to_date) OVERLAPS (DATE '2020-09-04', DATE '2020-09-09') "
-//				+ "GROUP BY site_id ORDER BY site_id)";
-				
+		// **************ANDY***********************
+		int arrivalYear = Integer.parseInt(arrival.substring(0,4)); 
+		int arrivalMon= Integer.parseInt(arrival.substring(5,7)); 
+		int arrivalDay = Integer.parseInt(arrival.substring(8)); 
+		
+		int depYear = Integer.parseInt(departure.substring(0,4)); 
+		int depMon= Integer.parseInt(departure.substring(5,7)); 
+		int depDay = Integer.parseInt(departure.substring(8)); 
+		
+		Set <LocalDate> dates = new HashSet<LocalDate>();
+		dates.add(LocalDate.of(arrivalYear, arrivalMon, arrivalDay));
+		dates.add(LocalDate.of(depYear, depMon, depDay));
+		
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+		parameters.addValue("dates", dates);
+			
+		String sqlSelect = "SELECT * FROM site WHERE campground_id = 1 AND site_id "
+				+ "NOT IN (SELECT site_id FROM reservation WHERE (from_date, to_date) OVERLAPS ( :dates ) )";
+		// **************ANDY***********************
+		
 //				"SELECT * FROM reservation " + "JOIN site ON site.site_id = reservation.site_id"
 //				+ "WHERE site.campground_id = " + campgroundId + "AND site.site_id NOT IN ("
 //				+ "SELECT site_id FROM reservation " + "WHERE (from_date, to_date) OVERLAPS (DATE '?', DATE '?')"
 //				+ ") GROUP BY site.site_id" + "ORDER BY site.site_id";
 
 		List<Site> siteList = new ArrayList<Site>();
-		SqlRowSet rowset = jdbc.queryForRowSet(sqlSelect, arrival, departure);
+		
+		// **************ANDY***********************
+		SqlRowSet rowset = jdbcSpecial.queryForRowSet(sqlSelect, parameters);
+		// **************ANDY***********************
 		while (rowset.next()) {
 			Site site = new Site();
 			site.setAccessible(rowset.getBoolean("accessible"));
@@ -66,6 +94,7 @@ public class JDBCSiteDAO implements SiteDAO {
 			site.setMaxRVSize(rowset.getLong("max_rv_length"));
 			site.setSiteNumber(rowset.getLong("site_number"));
 			site.setUtilities(rowset.getBoolean("utilities"));
+			System.out.println(site.getSiteNumber());
 			siteList.add(site);
 		}
 		
