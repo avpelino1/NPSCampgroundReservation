@@ -101,8 +101,9 @@ public class CampgroundCLI {
 					//we need to ask them to input different dates
 				} else {
 				System.out.println("Results Matching Your Criteria:");
-				System.out.println("list of sites");
-				
+				for (Site site: availableSites) {
+				System.out.println(site.getId() + "\n");
+				}
 				
 				
 				}
