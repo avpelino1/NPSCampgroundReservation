@@ -93,7 +93,6 @@ public class CampgroundCLI {
 				Campground chosen = menu.getCampgroundChoice(campgroundDAO.getAllCampground(park));
 				System.out.println("You have chosen: " + chosen.getName());
 				// find reservation in that campground
-				// findReservation(campground);
 				List<Site> availableSites = siteDAO.getAllAvailable(chosen);
 				if (availableSites.size() == 0) {
 					System.out.println("There are no available sites.");
@@ -101,8 +100,15 @@ public class CampgroundCLI {
 					//we need to ask them to input different dates
 				} else {
 				System.out.println("Results Matching Your Criteria:");
-				for (Site site: availableSites) {
-				System.out.println(site.getId() + "\n");
+				System.out.println("	Site Number	Site Size	Accessible? 	Utilities? 	RV Size Allowed 	Cost");
+				System.out.println("	--------------------------------------------------------------------------------------------");
+				menu.displaySiteOptions(availableSites, chosen.getDailyFee());
+				Site chosenSite = menu.getSiteChoice(availableSites);
+//				for (Site site: availableSites) {
+//				System.out.println(site.getSiteNumber() + "		" + site.getMaxOccupancy() + "		" 
+//				+ site.isAccessible() + "		" + site.isUtilities() + "		" + site.getMaxRVSize() + "			" +
+//						chosen.getDailyFee());
+				// fix what order they are reported
 				}
 				
 				
@@ -110,11 +116,8 @@ public class CampgroundCLI {
 				
 			}
 		}
-	}
+	
 
-	public void findReservation(Campground campground) {
-
-	}
 
 	public Park mapRowToPark(String query) {
 		Park park = new Park();

@@ -27,16 +27,14 @@ public class JDBCSiteDAO implements SiteDAO {
 
 	private DataSource datasource;
 	public JdbcTemplate jdbc;
-	// **************ANDY***********************
 	public NamedParameterJdbcTemplate jdbcSpecial;
-	// **************ANDY***********************
+
 	
 	public JDBCSiteDAO(DataSource dataSource) {
 		this.datasource = dataSource;
 		jdbc = new JdbcTemplate(datasource);
-		// **************ANDY***********************
 		jdbcSpecial = new NamedParameterJdbcTemplate(datasource);
-		// **************ANDY***********************
+
 	}
 
 	@Override
@@ -54,16 +52,8 @@ public class JDBCSiteDAO implements SiteDAO {
 
 		// this selects the site_id of all available campsites in the campground that
 		// the user chose:
-<<<<<<< HEAD
-
 		
-		String sqlSelect = "SELECT * FROM site WHERE campground_id = " + campgroundId + " AND site_id "
-				+ "NOT IN (SELECT site_id FROM reservation WHERE (from_date, to_date) OVERLAPS (DATE '" + arrival + "', DATE '" + departure + "') "
-				+ "GROUP BY site_id ORDER BY site_id)";
-				
-=======
-		
-		// **************ANDY***********************
+	
 		int arrivalYear = Integer.parseInt(arrival.substring(0,4)); 
 		int arrivalMon= Integer.parseInt(arrival.substring(5,7)); 
 		int arrivalDay = Integer.parseInt(arrival.substring(8)); 
@@ -76,28 +66,24 @@ public class JDBCSiteDAO implements SiteDAO {
 		dates.add(LocalDate.of(arrivalYear, arrivalMon, arrivalDay));
 		dates.add(LocalDate.of(depYear, depMon, depDay));
 		
+		 Set <Long> anId =  new HashSet<Long>();
+		    anId.add(1L);
+		
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
 		parameters.addValue("dates", dates);
+		 parameters.addValue("id", anId);
 			
-		String sqlSelect = "SELECT * FROM site WHERE campground_id = 1 AND site_id "
-				+ "NOT IN (SELECT site_id FROM reservation WHERE (from_date, to_date) OVERLAPS ( :dates ) )";
-		// **************ANDY***********************
+		String sqlSelect = "SELECT * FROM site WHERE campground_id = :id AND site_id "
+				+ "NOT IN (SELECT site_id FROM reservation WHERE (from_date, to_date) OVERLAPS ( :dates ) ) LIMIT 5";
+
 		
->>>>>>> 9d9085f69f3255555418c5eac4c429758dda0cb6
-//				"SELECT * FROM reservation " + "JOIN site ON site.site_id = reservation.site_id"
-//				+ "WHERE site.campground_id = " + campgroundId + "AND site.site_id NOT IN ("
-//				+ "SELECT site_id FROM reservation " + "WHERE (from_date, to_date) OVERLAPS (DATE '?', DATE '?')"
-//				+ ") GROUP BY site.site_id" + "ORDER BY site.site_id";
 
 		List<Site> siteList = new ArrayList<Site>();
-<<<<<<< HEAD
-		SqlRowSet rowset = jdbc.queryForRowSet(sqlSelect);
-=======
 		
-		// **************ANDY***********************
+
 		SqlRowSet rowset = jdbcSpecial.queryForRowSet(sqlSelect, parameters);
-		// **************ANDY***********************
->>>>>>> 9d9085f69f3255555418c5eac4c429758dda0cb6
+
+
 		while (rowset.next()) {
 			Site site = new Site();
 			site.setAccessible(rowset.getBoolean("accessible"));
@@ -107,7 +93,6 @@ public class JDBCSiteDAO implements SiteDAO {
 			site.setMaxRVSize(rowset.getLong("max_rv_length"));
 			site.setSiteNumber(rowset.getLong("site_number"));
 			site.setUtilities(rowset.getBoolean("utilities"));
-			System.out.println(site.getSiteNumber());
 			siteList.add(site);
 		}
 		
