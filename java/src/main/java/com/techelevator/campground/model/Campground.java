@@ -51,8 +51,8 @@ public class Campground {
 		}
 		
 		public String toString() {
-			String camp = this.getName() + " Open from: " + this.getOpen_mm() + " until " +  
-			this.getClose_mm() + " and it costs: " + this.getDailyFee();
+			String camp = this.getName() + "		" + this.getOpen_mm() + "		" +  
+			this.getClose_mm() + "		" + this.getDailyFee();
 			return camp;
 		}
 		

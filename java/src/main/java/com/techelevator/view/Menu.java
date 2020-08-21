@@ -96,14 +96,18 @@ public class Menu {
 			int selectedOption = Integer.valueOf(userInput);
 			if (selectedOption > 0 && selectedOption <= options1.length) {
 				choice = options1[selectedOption - 1];
+			} else if (selectedOption == 0) {
+				System.out.println("Cancelling Reservation");
+			} else if (choice == null && selectedOption != 0) {
+				out.println("\n*** " + userInput + " is not a valid option ***\n");
 			}
 		} catch (NumberFormatException e) {
 			// eat the exception, an error message will be displayed below since choice will
 			// be null
 		}
-		if (choice == null) {
-			out.println("\n*** " + userInput + " is not a valid option ***\n");
-		}
+//		if (choice == nu) {
+//			out.println("\n*** " + userInput + " is not a valid option ***\n");
+//		}
 		return choice;
 	}
 	public void displaySiteOptions(List<Site> options, BigDecimal cost) {

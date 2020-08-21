@@ -3,6 +3,7 @@ package com.techelevator;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -87,8 +88,9 @@ public class CampgroundCLI {
 			choice = (String) menu.getChoiceFromOptions(PARK_MENU);
 			if (choice.equals("View Campgrounds")) {
 				List<Campground> campgrounds = campgroundDAO.getAllCampground(park);
+				System.out.println("Name	Open From	Until	Daily Fee");
 				for (Campground campground : campgrounds) {
-					System.out.println(campground.toString() + "\n");
+					System.out.println(campground.toString());
 				}
 			} else if (choice.equals("Search for Reservation")) {
 				// select a campground
@@ -98,12 +100,19 @@ public class CampgroundCLI {
 				// find reservation in that campground
 				String[] dateInputs = siteDAO.findDates();
 				List<Site> availableSites = siteDAO.getAllAvailable(chosen, dateInputs);
-			
-				LocalDate arrival = LocalDate.parse(dateInputs[0]);
-				LocalDate departure = LocalDate.parse(dateInputs[1]);
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+				LocalDate arrival = LocalDate.parse(dateInputs[0], formatter);
+				LocalDate departure = LocalDate.parse(dateInputs[1], formatter);
 				Period period = Period.between ( arrival , departure );
+				if (period.getMonths() > 0 || period.getYears() > 0) {
+					System.out.println("Reservation cannot exceed a month, please start over");
+					choice = "Return to Previous Screen";
+					continue;
+				}
 				Integer daysElapsed = period.getDays();
 				BigDecimal totalCost = chosen.getDailyFee().multiply(new BigDecimal(daysElapsed));
+			
+				
 				
 				
 				if (availableSites.size() == 0) {
@@ -118,6 +127,10 @@ public class CampgroundCLI {
 							"	--------------------------------------------------------------------------------------------");
 					menu.displaySiteOptions(availableSites, totalCost);
 					Site chosenSite = menu.getSiteChoice(availableSites);
+					if (chosenSite == null) {
+						choice = "Return to Previous Screen";
+						continue;
+					}
 					reservationDAO.createReservation(chosenSite.getId(), dateInputs);
 				}
 
@@ -125,6 +138,21 @@ public class CampgroundCLI {
 
 		}
 	}
+
+//	private BigDecimal getTotalCost(Campground chosen, String[] dateInputs) {
+//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//		LocalDate arrival = LocalDate.parse(dateInputs[0], formatter);
+//		LocalDate departure = LocalDate.parse(dateInputs[1], formatter);
+//		Period period = Period.between ( arrival , departure );
+//		if (period.getMonths() > 0 || period.getYears() > 0) {
+//			System.out.println("Reservation is too long, please start over");
+//			choice = "Return to Previous Screen";
+//			System.exit(0);
+//		}
+//		Integer daysElapsed = period.getDays();
+//		BigDecimal totalCost = chosen.getDailyFee().multiply(new BigDecimal(daysElapsed));
+//		return totalCost;
+//	}
 
 	public Park mapRowToPark(String query) {
 		Park park = new Park();
