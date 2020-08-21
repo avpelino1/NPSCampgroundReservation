@@ -1,5 +1,8 @@
 package com.techelevator;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Date;
 import java.util.List;
 
@@ -20,7 +23,7 @@ import com.techelevator.view.Menu;
 
 public class CampgroundCLI {
 
-	private static final String[] MAIN_MENU_OPTIONS = { "Acadia", "Arches", "Cuyahoga National Valley Park", "quit" };
+	private static final String[] MAIN_MENU_OPTIONS = { "Acadia", "Arches", "Cuyahoga Valley", "quit" };
 	private static final String[] PARK_MENU = { "View Campgrounds", "Search for Reservation",
 			"Return to Previous Screen" };
 
@@ -66,8 +69,8 @@ public class CampgroundCLI {
 				System.out.println(park.toString());
 				processParkMenu(park);
 
-			} else if (choice.equals("Cuyahoga National Valley Park")) {
-				Park park = mapRowToPark("SELECT * from Park where name = 'Cuyahoga National Valley Park'");
+			} else if (choice.equals("Cuyahoga Valley")) {
+				Park park = mapRowToPark("SELECT * from Park where name = 'Cuyahoga Valley'");
 				System.out.println(park.toString());
 				processParkMenu(park);
 
@@ -93,31 +96,35 @@ public class CampgroundCLI {
 				Campground chosen = menu.getCampgroundChoice(campgroundDAO.getAllCampground(park));
 				System.out.println("You have chosen: " + chosen.getName());
 				// find reservation in that campground
-				List<Site> availableSites = siteDAO.getAllAvailable(chosen);
+				String[] dateInputs = siteDAO.findDates();
+				List<Site> availableSites = siteDAO.getAllAvailable(chosen, dateInputs);
+			
+				LocalDate arrival = LocalDate.parse(dateInputs[0]);
+				LocalDate departure = LocalDate.parse(dateInputs[1]);
+				Period period = Period.between ( arrival , departure );
+				Integer daysElapsed = period.getDays();
+				BigDecimal totalCost = chosen.getDailyFee().multiply(new BigDecimal(daysElapsed));
+				
+				
 				if (availableSites.size() == 0) {
 					System.out.println("There are no available sites.");
 					choice = "Return to Previous Screen";
-					//we need to ask them to input different dates
+					// we need to ask them to input different dates
 				} else {
-				System.out.println("Results Matching Your Criteria:");
-				System.out.println("	Site Number	Site Size	Accessible? 	Utilities? 	RV Size Allowed 	Cost");
-				System.out.println("	--------------------------------------------------------------------------------------------");
-				menu.displaySiteOptions(availableSites, chosen.getDailyFee());
-				Site chosenSite = menu.getSiteChoice(availableSites);
-//				for (Site site: availableSites) {
-//				System.out.println(site.getSiteNumber() + "		" + site.getMaxOccupancy() + "		" 
-//				+ site.isAccessible() + "		" + site.isUtilities() + "		" + site.getMaxRVSize() + "			" +
-//						chosen.getDailyFee());
-				// fix what order they are reported
+					System.out.println("Results Matching Your Criteria:");
+					System.out
+							.println("	Site Number	Site Size	Accessible? 	Utilities? 	RV Size Allowed 	Cost");
+					System.out.println(
+							"	--------------------------------------------------------------------------------------------");
+					menu.displaySiteOptions(availableSites, totalCost);
+					Site chosenSite = menu.getSiteChoice(availableSites);
+					reservationDAO.createReservation(chosenSite.getId(), dateInputs);
 				}
-				
-				
-				}
-				
-			}
-		}
-	
 
+			}
+
+		}
+	}
 
 	public Park mapRowToPark(String query) {
 		Park park = new Park();

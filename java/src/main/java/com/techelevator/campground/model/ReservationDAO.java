@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface ReservationDAO {
 
-	public void createReservation();
+	public void createReservation(Long site_id, String[] dates);
 	
 	public List<Reservation> getAllReservation();
 	

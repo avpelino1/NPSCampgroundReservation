@@ -112,7 +112,7 @@ public class Menu {
 		int counter = 1;
 		for (Site site : options) {
 			System.out.println(counter + ") 	" + site.getSiteNumber() + "		" + site.getMaxOccupancy() + "		" 
-					+ site.isAccessible() + "		" + site.isUtilities() + "		" + site.getMaxRVSize() + "			" +
+					+ site.isAccessible() + "		" + site.isUtilities() + "		" + site.getMaxRVSize() + "			$" +
 					cost.toString());
 			counter++;
 		}

@@ -38,13 +38,13 @@ public class JDBCSiteDAO implements SiteDAO {
 	}
 
 	@Override
-	public List<Site> getAllAvailable(Campground campground) {
+	public List<Site> getAllAvailable(Campground campground, String[] userDates) {
 		Campground chosen = campground;
-		System.out.println("What is the arrival date? ____-__-__");
-		String arrival = findDate();
-
-		System.out.println("What is the departure date? ____-__-__");
-		String departure = findDate();
+		
+		String[] dateInputs = userDates;
+		
+		String arrival = dateInputs[0];
+		String departure = dateInputs[1];
 
 		Long campgroundId = chosen.getId();
 		
@@ -111,16 +111,25 @@ public class JDBCSiteDAO implements SiteDAO {
 		return null;
 	}
 
-	private String findDate() {
+	public String[] findDates() {
 		Scanner scanner = new Scanner(System.in);
-		String date = scanner.nextLine();
+		String[] dates = new String[2];
+		
+		System.out.println("What is the arrival date? ____-__-__");
+		String arrivalDate = scanner.nextLine();
+		dates[0] = arrivalDate;
+		
+		System.out.println("What is the departure date? ____-__-__");
+		String departureDate = scanner.nextLine();
+		dates[1] = departureDate;
+		
 //		String date = null;
 //		try {
 //			date = new SimpleDateFormat("dd/MM/yyyy").parse(input);
 //		} catch (ParseException e) {
 //			e.printStackTrace();
 //		}
-		return date;
+		return dates;
 	}
 
 }
