@@ -44,7 +44,11 @@ public abstract class DAOIntegrationTest {
 
 	/* This method provides access to the DataSource for subclasses so that
 	 * they can instantiate a DAO for testing */
-	protected DataSource getDataSource() {
+	protected static DataSource getDataSource() {
 		return dataSource;
 	}
+	
+	
+	
+	
 }

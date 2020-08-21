@@ -41,33 +41,8 @@ private JdbcTemplate jdbc;
 			confirmationId = rowset.getLong("reservation_id");
 		}
 		
-		System.out.println("The reservation has been made and the confirmation id is " + confirmationId);
+		System.out.println("The reservation has been made and the confirmation id is " + confirmationId);	
 		
-		
-	}
-
-	@Override
-	public List<Reservation> getAllReservation() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void deleteReservation() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Reservation searchReservationByName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Reservation searchReservationById() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

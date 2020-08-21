@@ -52,7 +52,6 @@ public class JDBCSiteDAO implements SiteDAO {
 
 		// this selects the site_id of all available campsites in the campground that
 		// the user chose:
-		
 	
 		int arrivalYear = Integer.parseInt(arrival.substring(0,4)); 
 		int arrivalMon= Integer.parseInt(arrival.substring(5,7)); 
@@ -74,15 +73,11 @@ public class JDBCSiteDAO implements SiteDAO {
 		 parameters.addValue("id", anId);
 			
 		String sqlSelect = "SELECT * FROM site WHERE campground_id = :id AND site_id "
-				+ "NOT IN (SELECT site_id FROM reservation WHERE (from_date, to_date) OVERLAPS ( :dates ) ) LIMIT 5";
-
-		
+				+ "NOT IN (SELECT site_id FROM reservation WHERE (from_date, to_date) OVERLAPS ( :dates ) ) ORDER BY utilities DESC LIMIT 5";
 
 		List<Site> siteList = new ArrayList<Site>();
 		
-
 		SqlRowSet rowset = jdbcSpecial.queryForRowSet(sqlSelect, parameters);
-
 
 		while (rowset.next()) {
 			Site site = new Site();
