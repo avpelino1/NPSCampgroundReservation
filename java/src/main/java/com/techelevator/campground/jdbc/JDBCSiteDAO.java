@@ -117,13 +117,7 @@ public class JDBCSiteDAO implements SiteDAO {
 		System.out.println("What is the departure date? ____-__-__");
 		String departureDate = scanner.nextLine();
 		dates[1] = departureDate;
-		
-//		String date = null;
-//		try {
-//			date = new SimpleDateFormat("dd/MM/yyyy").parse(input);
-//		} catch (ParseException e) {
-//			e.printStackTrace();
-//		}
+	
 		return dates;
 	}
 

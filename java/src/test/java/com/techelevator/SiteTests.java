@@ -47,7 +47,7 @@ public class SiteTests {
 	
 	@Test
 	public void getAllAvailableTest() {
-		String sql = "SELECT * FROM site WHERE campground_id = 1";
+		String sql = "SELECT * FROM campground WHERE campground_id = 1";
 		SqlRowSet rowset = jdbc.queryForRowSet(sql);
 		Campground camp = new Campground();
 		while (rowset.next()) {	
@@ -59,10 +59,5 @@ public class SiteTests {
 		
 		assertEquals(5, actual.size());
 	}
-
-//	@Test
-//	public void findDatesTest() {
-//		
-//	}
 	
 }
