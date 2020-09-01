@@ -1,0 +1,16 @@
+Group 4 Feedback:
+
+1. You could have caught this exception to prevent the program from terminating
+abruptly:
+
+Please choose an option >>> 3
+You have chosen: Juniper Group Site
+What is the arrival date? ____-__-__
+s34gds
+What is the departure date? ____-__-__
+werdss
+s34gds werdss
+Exception in thread "main" java.lang.NumberFormatException: For input string: "s34g"
+	at java.lang.NumberFormatException.forInputString(Unknown Source)
+	at java.lang.Integer.parseInt(Unknown Source)
+	at java.lang.Integer.parseInt(Unknown Source)
